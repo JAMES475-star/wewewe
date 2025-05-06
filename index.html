@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>班級戀愛股市</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fef9f9;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #e91e63;
+    }
+    .pair {
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background-color: #fff0f6;
+    }
+    button {
+      padding: 5px 10px;
+      border: none;
+      background-color: #ff4081;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .event-form {
+      margin-top: 30px;
+      background-color: #fff3f7;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    textarea {
+      width: 100%;
+      height: 60px;
+    }
+  </style>
+</head>
+<body>
+  <h1>班級戀愛股市</h1>
+  <div id="pair-list"></div>
+
+  <div class="event-form">
+    <h2>📣 匿名投稿事件</h2>
+    <label for="pairSelect">選擇配對：</label>
+    <select id="pairSelect"></select><br><br>
+    <label for="eventText">事件內容：</label><br>
+    <textarea id="eventText" placeholder="今天看到他們一起走路..."></textarea><br><br>
+    <button onclick="submitEvent()">送出投稿</button>
+  </div>
+
+  <script>
+    const pairs = [
+      { name: "勝 × 准", score: 0, events: [] },
+      { name: "熊 × 張", score: 0, events: [] },
+      { name: "張 × 芊", score: 0, events: [] },
+      { name: "芊 × 梁", score: 0, events: [] }
+    ];
+
+    function renderPairs() {
+      const list = document.getElementById('pair-list');
+      const select = document.getElementById('pairSelect');
+      list.innerHTML = '';
+      select.innerHTML = '';
+
+      pairs.forEach((pair, index) => {
+        const div = document.createElement('div');
+        div.className = 'pair';
+        div.innerHTML = `
+          <h3>${pair.name}</h3>
+          <p>戀愛股價：<strong>${pair.score}</strong></p>
+          <button onclick="invest(${index})">投資 ❤️</button>
+          <ul>${pair.events.map(e => `<li>📝 ${e}</li>`).join('')}</ul>
+        `;
+        list.appendChild(div);
+
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = pair.name;
+        select.appendChild(option);
+      });
+    }
+
+    function invest(index) {
+      pairs[index].score++;
+      renderPairs();
+    }
+
+    function submitEvent() {
+      const index = document.getElementById('pairSelect').value;
+      const text = document.getElementById('eventText').value.trim();
+      if (text) {
+        pairs[index].events.push(text);
+        pairs[index].score += 2; // 投稿事件比投資加更多分
+        document.getElementById('eventText').value = '';
+        renderPairs();
+      } else {
+        alert("請輸入事件內容！");
+      }
+    }
+
+    renderPairs();
+  </script>
+</body>
+</html>
